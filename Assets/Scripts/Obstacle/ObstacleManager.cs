@@ -32,7 +32,7 @@ public class ObstacleManager : MonoBehaviour
             yield return new WaitForSeconds(spawnInterval);
 
             obstacleCount++;
-            if(obstacleCount==10){
+            if(obstacleCount==maxSpawnCount){
            Vector3 spawnPortal = new Vector3(spawnPoint.position.x,-1f , spawnPoint.position.z);
             GameObject spawnedPortal = Instantiate(Portal,spawnPortal, Quaternion.identity);
             StartCoroutine(MovePortal(spawnedPortal));
@@ -45,17 +45,30 @@ public class ObstacleManager : MonoBehaviour
 
 
     private IEnumerator MoveObstacle(GameObject obstacle)
+{
+    if (obstacle == null)
     {
-        Vector3 direction = Vector3.left;
+        yield break; // Coroutine'u hemen sonlandır
+    }
 
-        while (obstacle.transform.position.x > -20f)
-        {
-            obstacle.transform.Translate(direction * obstacleSpeed * Time.deltaTime);
-            yield return null;
-        }
+    Vector3 direction = Vector3.left;
 
+    while (obstacle != null && obstacle.transform.position.x > -20f)
+    {
+        obstacle.transform.Translate(direction * obstacleSpeed * Time.deltaTime);
+        yield return null;
+    }
+
+    if (obstacle != null)
+    {
         Destroy(obstacle);
     }
+}
+
+
+
+
+
     private IEnumerator MovePortal(GameObject Portal)
     {
         Vector3 direction = Vector3.left;

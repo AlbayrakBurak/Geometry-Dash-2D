@@ -2,12 +2,20 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
 using TMPro;
+
+
 public class GameManager : MonoBehaviour
 {
     private const string AttemptKey = "Attempt";
     private static GameManager _instance;
 
+    public GameObject Ground;
+    //public GameObject upDownGround;
     public TMP_Text textMeshPro;
+
+    public GameObject SecondZoneStick ;
+
+    private bool isInSecondZone = false;
 
     public static GameManager Instance
     {
@@ -24,8 +32,12 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         InitializeAttempts();
+
     }
 
+    public void Menu(){
+        SceneManager.LoadScene("MainMenu");
+    }
     private void InitializeAttempts()
     {
         int currentAttempt = PlayerPrefs.GetInt(AttemptKey, 0);
@@ -56,5 +68,39 @@ public class GameManager : MonoBehaviour
     public int GetAttempts()
     {
         return PlayerPrefs.GetInt(AttemptKey, 0);
+    }
+
+    public void EnterSecondZone()
+    {
+        isInSecondZone = true;
+    }
+
+    public void ExitSecondZone()
+    {
+        isInSecondZone = false;
+    }
+
+    public bool IsInSecondZone()
+    {
+        return isInSecondZone;
+    }
+
+    public void PlayerHitObstacle()
+    {
+        IncreaseAttempts();
+
+            SceneManager.LoadScene("MainGame");
+
+    }
+
+    public void ExitGame()
+    {
+        Application.Quit();
+    }
+
+    public void RemoveGround(){
+        Ground.SetActive(false);
+     //   upDownGround.SetActive(true);
+        SecondZoneStick.SetActive(true);
     }
 }

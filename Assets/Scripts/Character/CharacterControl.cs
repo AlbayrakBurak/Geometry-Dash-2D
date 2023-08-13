@@ -1,12 +1,9 @@
 using UnityEngine;
-using System.Collections;
-using UnityEngine.SceneManagement;
-using TMPro;
 
 public class CharacterControl : MonoBehaviour
 {
-    public GameObject Player;
     public float jumpForce = 15.0f;
+    public float flyForce = 5.0f;
     public Transform groundCheck;
     public LayerMask groundLayer;
     public float groundCheckRadius = 0.1f;
@@ -16,6 +13,7 @@ public class CharacterControl : MonoBehaviour
 
     private Rigidbody2D rb;
     private bool isGrounded = false;
+    private bool hasEnteredSecondZone = false; // 2. bölgeye giriş kontrolü.
 
     private void Start()
     {
@@ -26,7 +24,12 @@ public class CharacterControl : MonoBehaviour
     {
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
-        if (isGrounded && Input.GetMouseButtonDown(0))
+        if (hasEnteredSecondZone && Input.GetMouseButton(0))
+        {
+            FloatInSecondZone();
+        }
+
+        if (isGrounded && Input.GetMouseButtonDown(0) && !hasEnteredSecondZone)
         {
             Jump();
         }
@@ -41,6 +44,18 @@ public class CharacterControl : MonoBehaviour
     {
         rb.velocity = new Vector2(rb.velocity.x, jumpForce);
         rb.angularVelocity = -180f;
+    }
+
+    private void FloatInSecondZone()
+    {
+        if (Input.GetMouseButton(0))
+        {
+            rb.velocity = new Vector2(rb.velocity.x, flyForce);
+        }
+        else
+        {
+            rb.velocity = new Vector2(rb.velocity.x, -flyForce);
+        }
     }
 
     private void FixedUpdate()
@@ -61,8 +76,16 @@ public class CharacterControl : MonoBehaviour
     {
         if (collision.CompareTag("Obstacle"))
         {
-            GameManager.Instance.IncreaseAttempts();
-            SceneManager.LoadScene("MainMenu");
+            GameManager.Instance.PlayerHitObstacle();
+        }
+         if (collision.CompareTag("SecondZonePortal")) // 2. bölge kapısı
+        {
+            hasEnteredSecondZone = true;
+            GameManager.Instance.RemoveGround();
+            Debug.Log("2.Bölge Giriş");
+
         }
     }
+
+   
 }
