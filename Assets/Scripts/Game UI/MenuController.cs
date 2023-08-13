@@ -59,4 +59,8 @@ public class MenuController : MonoBehaviour
     {
         SceneManager.LoadScene("MainGame"); // Ana sahneye geçiş
     }
+
+    public void Quit(){
+        Application.Quit();
+    }
 }
