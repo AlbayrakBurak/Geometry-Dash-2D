@@ -21,11 +21,11 @@ public class LevelGenerator : MonoBehaviour
             GameObject newObstacle = Instantiate(obstaclePrefab, transform.position, Quaternion.identity);
 
             // Oluşturulan engelin sola doğru hareketini yöneten bir script ekleyin
-            ObstacleMovement obstacleMovement = newObstacle.GetComponent<ObstacleMovement>();
-            if (obstacleMovement != null)
-            {
-                obstacleMovement.Initialize();
-            }
+            // ObstacleMovement obstacleMovement = newObstacle.GetComponent<ObstacleMovement>();
+            // if (obstacleMovement != null)
+            // {
+            //     obstacleMovement.Initialize();
+            // }
 
             // Belirli aralıklarla yeni engel oluştur
             yield return new WaitForSeconds(obstacleSpawnInterval);

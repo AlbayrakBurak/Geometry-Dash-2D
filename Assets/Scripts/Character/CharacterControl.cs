@@ -1,13 +1,17 @@
 using UnityEngine;
+using System.Collections;
+using UnityEngine.SceneManagement;
+using TMPro;
 
 public class CharacterControl : MonoBehaviour
 {
+    public GameObject Player;
     public float jumpForce = 15.0f;
     public Transform groundCheck;
     public LayerMask groundLayer;
     public float groundCheckRadius = 0.1f;
 
-    public GameObject particlePrefab; // Particle effect prefabını bu alana sürükleyip bırakın
+    public GameObject particlePrefab;
     public Transform particleSpawn;
 
     private Rigidbody2D rb;
@@ -25,10 +29,10 @@ public class CharacterControl : MonoBehaviour
         if (isGrounded && Input.GetMouseButtonDown(0))
         {
             Jump();
-            
         }
 
-        if(isGrounded==true){
+        if (isGrounded)
+        {
             SpawnParticle();
         }
     }
@@ -43,13 +47,22 @@ public class CharacterControl : MonoBehaviour
     {
         Vector3 groundCheckPosition = new Vector3(transform.position.x, transform.position.y - 0.5f, transform.position.z);
         groundCheck.position = groundCheckPosition;
-        Vector3 particleSpawnPosition=new Vector3(transform.position.x-0.7f,transform.position.y,transform.position.z);
-        particleSpawn.position=particleSpawnPosition;
+        Vector3 particleSpawnPosition = new Vector3(transform.position.x - 0.7f, transform.position.y, transform.position.z);
+        particleSpawn.position = particleSpawnPosition;
     }
 
     private void SpawnParticle()
     {
         GameObject particleObject = Instantiate(particlePrefab, particleSpawn.transform.position, Quaternion.identity);
-        Destroy(particleObject, 0.3f); // 0.5 saniye sonra particleObject'u yok et
+        Destroy(particleObject, 0.3f);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Obstacle"))
+        {
+            GameManager.Instance.IncreaseAttempts();
+            SceneManager.LoadScene("MainMenu");
+        }
     }
 }
